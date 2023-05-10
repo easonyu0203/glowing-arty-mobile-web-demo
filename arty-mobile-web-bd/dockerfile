@@ -1,0 +1,18 @@
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
+
+WORKDIR /app
+
+# Copy only the requirements file first
+COPY requirements.txt .
+
+# Install the Python dependencies
+RUN pip install -r requirements.txt
+
+# Copy the rest of the application files
+COPY . .
+
+# Expose the container port
+EXPOSE 8000
+
+# Run the application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

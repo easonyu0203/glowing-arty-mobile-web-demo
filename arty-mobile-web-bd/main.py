@@ -1,5 +1,7 @@
 import base64
 from io import BytesIO
+
+import PIL
 import torch
 from PIL import Image
 
@@ -50,7 +52,10 @@ async def predict(base64_image: Base64Image):
     image_data = base64.b64decode(base64_image.data_url.split(",")[1])
 
     # Load the image data into a PIL Image object
-    image = Image.open(BytesIO(image_data))
+    try:
+        image = Image.open(BytesIO(image_data))
+    except PIL.UnidentifiedImageError:
+        return JSONResponse(content=[])
 
     # Run the image through the pre-trained model
     predictions = pipe(image)

@@ -1,0 +1,10 @@
+version: "3"
+services:
+  fd:
+    build: ./arty-mobile-web-fd
+    ports:
+      - "3000:3000"
+  bd:
+    build: ./arty-mobile-web-bd
+    ports:
+      - "8000:8000"

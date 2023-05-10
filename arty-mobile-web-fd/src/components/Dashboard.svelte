@@ -20,7 +20,7 @@
 	};
 </script>
 
-<div class="w-full">
+<div class="w-full max-w-xl">
 	<ul class="w-full flex flex-col">
 		{#each predictions as prediction}
 			<li class="w-full flex items-center my-1 gap-2">

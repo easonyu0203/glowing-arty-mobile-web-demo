@@ -9,22 +9,27 @@
 
 	let videoElement: HTMLVideoElement;
 	let predictions: Prediction[] = [];
+	let current_video_device_id: number = -1;
 
 	onMount(async () => {
 		await getVideoStream();
-
 		let intervalId = setInterval(async () => {
 			await predict_frame();
 		}, 1000);
-
 		return () => {
 			clearInterval(intervalId);
 		};
 	});
 
 	const getVideoStream = async () => {
+		const videoDevices = await navigator.mediaDevices
+			.enumerateDevices()
+			.then((devices) => devices.filter((device) => device.kind === 'videoinput'));
+		const video_id_to_use = ++current_video_device_id % videoDevices.length;
+		console.log('Using video device: ' + video_id_to_use);
 		videoElement.srcObject = await navigator.mediaDevices.getUserMedia({
 			video: {
+				// deviceId: { exact: videoDevices[video_id_to_use].deviceId },
 				width: { ideal: 480 },
 				height: { ideal: 480 }
 			}
@@ -69,10 +74,14 @@
 	<h1 class="text-3xl font-bold">Arty Demo App</h1>
 
 	<div class=" bg-zinc-800 max-w-lg aspect-square rounded flex justify-center items-center">
-		<video class=" rounded w-full h-full" autoplay muted bind:this={videoElement} />
+		<video class=" rounded w-full h-full" playsinline autoplay muted bind:this={videoElement} />
 	</div>
-
-	<!-- <button on:click={predict_frame} class=" rounded text-3xl bg-orange-600">Predict</button> -->
-
 	<Dashboard {predictions} />
+
+	<div class=" flex justify-around gap-8">
+		<button on:click={async () => await getVideoStream()} class=" px-2 rounded bg-stone-300"
+			>Get Camera</button
+		>
+		<button on:click={predict_frame} class=" px-2 rounded bg-stone-300">Predict</button>
+	</div>
 </div>
