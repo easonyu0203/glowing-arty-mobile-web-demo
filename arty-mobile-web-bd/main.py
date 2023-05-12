@@ -10,9 +10,10 @@ from pydantic import BaseModel
 from transformers import pipeline
 
 model_checkpoint = "eason0203/swin-tiny-patch4-window7-224-finetuned-arty"
+model_checkpoint = "facebook/convnext-base-224"
 
 
-pipe = pipeline("image-classification", "eason0203/swin-tiny-patch4-window7-224-finetuned-arty", device=-1)
+pipe = pipeline("image-classification", model_checkpoint, device=-1)
 
 app = FastAPI()
 
@@ -38,6 +39,10 @@ async def root():
 @app.get("/hello/{name}")
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
+
+@app.post("/test")
+async def post_test():
+    return JSONResponse(content={"message": "Hello World"})
 
 @app.post("/predict")
 async def predict(base64_image: Base64Image):

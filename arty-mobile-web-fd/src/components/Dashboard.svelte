@@ -24,7 +24,7 @@
 	<ul class="w-full flex flex-col">
 		{#each predictions as prediction}
 			<li class="w-full flex items-center my-1 gap-2">
-				<span class="w-1/3">{prediction.label}</span>
+				<span class="w-1/3 h-6 overflow-y-hidden overscroll-x-auto">{prediction.label}</span>
 				<div class="relative w-1/2 h-3 bg-gray-300 rounded-full">
 					<div
 						class={`absolute top-0 left-0 ${getColor(prediction.score)} rounded-full h-full`}

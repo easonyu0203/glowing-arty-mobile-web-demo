@@ -21,14 +21,37 @@
 		};
 	});
 
-	const getVideoStream = async () => {
-		const videoDevices = await navigator.mediaDevices
+	const getDeviceIds = () => {
+		// Create an empty array to store the deviceIds
+		const deviceIds: string[] = [];
+
+		// Get a list of all available media devices
+		navigator.mediaDevices
 			.enumerateDevices()
-			.then((devices) => devices.filter((device) => device.kind === 'videoinput'));
-		const video_id_to_use = ++current_video_device_id % videoDevices.length;
+			.then(function (devices) {
+				// Iterate through the devices
+				devices.forEach(function (device) {
+					// Check if the device has a deviceId
+					if (device.deviceId) {
+						// Add the deviceId to the array
+						deviceIds.push(device.deviceId);
+					}
+				});
+			})
+			.catch(function (error) {
+				console.error('Error enumerating devices:', error);
+			});
+		return deviceIds;
+	};
+
+	let used_idx: number = -1;
+	const getVideoStream = async () => {
+		const devices = getDeviceIds();
+		const used_device = devices[++used_idx % devices.length];
 		videoElement.srcObject = await navigator.mediaDevices.getUserMedia({
 			video: {
-				deviceId: { exact: videoDevices[video_id_to_use].deviceId },
+				facingMode: 'environment',
+				// deviceId: used_device,
 				width: { ideal: 480 },
 				height: { ideal: 480 }
 			}
@@ -48,7 +71,7 @@
 
 	const predict = async (data_url: string): Promise<Prediction[]> => {
 		// Send image data URL
-		const response = await fetch('http://' + import.meta.env.VITE_PREDICT_URL, {
+		const response = await fetch(import.meta.env.VITE_PREDICT_URL, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ data_url })
