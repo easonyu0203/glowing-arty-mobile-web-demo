@@ -26,10 +26,9 @@
 			.enumerateDevices()
 			.then((devices) => devices.filter((device) => device.kind === 'videoinput'));
 		const video_id_to_use = ++current_video_device_id % videoDevices.length;
-		console.log('Using video device: ' + video_id_to_use);
 		videoElement.srcObject = await navigator.mediaDevices.getUserMedia({
 			video: {
-				// deviceId: { exact: videoDevices[video_id_to_use].deviceId },
+				deviceId: { exact: videoDevices[video_id_to_use].deviceId },
 				width: { ideal: 480 },
 				height: { ideal: 480 }
 			}

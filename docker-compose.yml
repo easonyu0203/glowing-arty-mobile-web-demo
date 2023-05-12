@@ -4,6 +4,8 @@ services:
     build: ./arty-mobile-web-fd
     ports:
       - "3000:3000"
+    environment:
+      - VITE_PREDICT_URL="127.0.0.1:8000/predict"
   bd:
     build: ./arty-mobile-web-bd
     ports:

@@ -1,6 +1,15 @@
 FROM node:16-alpine
 WORKDIR /app
-COPY . .
+
+COPY package*.json ./
+
 RUN npm install
+
+COPY . .
+
+# Expose the container port
 EXPOSE 3000
+
+ENV VITE_PREDICT_URL=d"127.0.0.1:8000/predict"
+
 CMD ["npm", "run", "dev"]

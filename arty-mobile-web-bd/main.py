@@ -1,8 +1,6 @@
 import base64
 from io import BytesIO
-
 import PIL
-import torch
 from PIL import Image
 
 from fastapi import FastAPI
@@ -13,13 +11,8 @@ from transformers import pipeline
 
 model_checkpoint = "eason0203/swin-tiny-patch4-window7-224-finetuned-arty"
 
-# Check if CUDA is available, and set the device accordingly
-if torch.cuda.is_available():
-    device = 0  # Use GPU device 0
-else:
-    device = -1  # Use CPU
 
-pipe = pipeline("image-classification", "eason0203/swin-tiny-patch4-window7-224-finetuned-arty", device=device)
+pipe = pipeline("image-classification", "eason0203/swin-tiny-patch4-window7-224-finetuned-arty", device=-1)
 
 app = FastAPI()
 
