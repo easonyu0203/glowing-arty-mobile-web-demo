@@ -49,6 +49,7 @@ async def post_test():
 
 @app.post("/set-model")
 async def post_test(set_model_dto: SetModelDto):
+    global pipe
     try:
         pipe = pipeline("image-classification", set_model_dto.model_name, device=-1)
     except Exception as e:
