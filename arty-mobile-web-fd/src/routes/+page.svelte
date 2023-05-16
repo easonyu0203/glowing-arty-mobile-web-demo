@@ -9,16 +9,18 @@
 
 	let videoElement: HTMLVideoElement;
 	let predictions: Prediction[] = [];
-	let current_video_device_id: number = -1;
+	let is_user_mode: boolean = true;
 
 	onMount(async () => {
 		await getVideoStream();
-		let intervalId = setInterval(async () => {
-			await predict_frame();
-		}, 1000);
-		return () => {
-			clearInterval(intervalId);
-		};
+
+		// predict every second
+		// let intervalId = setInterval(async () => {
+		// 	await predict_frame();
+		// }, 1000);
+		// return () => {
+		// 	clearInterval(intervalId);
+		// };
 	});
 
 	const getDeviceIds = () => {
@@ -50,7 +52,7 @@
 		const used_device = devices[++used_idx % devices.length];
 		videoElement.srcObject = await navigator.mediaDevices.getUserMedia({
 			video: {
-				facingMode: 'environment',
+				facingMode: is_user_mode ? 'user' : 'environment',
 				// deviceId: used_device,
 				width: { ideal: 480 },
 				height: { ideal: 480 }
@@ -101,8 +103,12 @@
 	<Dashboard {predictions} />
 
 	<div class=" flex justify-around gap-8">
-		<button on:click={async () => await getVideoStream()} class=" px-2 rounded bg-stone-300"
-			>Get Camera</button
+		<button
+			on:click={async () => {
+				is_user_mode = !is_user_mode;
+				await getVideoStream();
+			}}
+			class=" px-2 rounded bg-stone-300">Change Camera</button
 		>
 		<button on:click={predict_frame} class=" px-2 rounded bg-stone-300">Predict</button>
 	</div>
