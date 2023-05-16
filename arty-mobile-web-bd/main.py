@@ -29,6 +29,9 @@ app.add_middleware(
 
 class Base64Image(BaseModel):
     data_url: str
+    
+class SetModelDto(BaseModel):
+    model_name: str
 
 
 @app.get("/")
@@ -43,6 +46,14 @@ async def say_hello(name: str):
 @app.post("/test")
 async def post_test():
     return JSONResponse(content={"message": "Hello World"})
+
+@app.post("/set-model")
+async def post_test(set_model_dto: SetModelDto):
+    try:
+        pipe = pipeline("image-classification", set_model_dto.model_name, device=-1)
+    except Exception as e:
+        return JSONResponse(content={"message": f"Error:\n{e}"})
+    return JSONResponse(content={"message": f"set model to {set_model_dto.model_name} successfully!"})
 
 @app.post("/predict")
 async def predict(base64_image: Base64Image):
